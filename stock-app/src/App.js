@@ -12,38 +12,35 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const demoLinks = [
+    Promise.all([
       // Check out guide online on how to do this using Promise.all properly
-      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=demo",
-      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
-    ];
-    demoLinks.forEach((link) =>
-      fetch(link)
-        .then((data) => data.json())
+      fetch("https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=demo"),
+      fetch("https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"),
+    ])
+        .then((data) => Promise.all(data.map(d => d.json())))
         .then((data) => {
-          let { "Global Quote": quote } = data;
-          let {
-            "01. symbol": symbol,
-            "05. price": price,
-            "10. change percent": percent,
-          } = quote;
-          let stock = { symbol, price, percent };
-          let temp = [...this.state.stocks, stock];
-          this.setState({ stocks: temp });
-          console.log(this.state.stocks);
+          let newData = data.map(d => {
+            let { "Global Quote": quote } = d;
+            let {
+              "01. symbol": symbol,
+              "05. price": price,
+              "10. change percent": percent,
+            } = quote;
+            let stock = { symbol, price, percent };
+            return stock;
         })
-    );
+        this.setState({ stocks: newData });
+      })
   }
 
   render() {
     let views = <img src="https://i.stack.imgur.com/7VozH.gif" />;
     const { stocks } = this.state;
     if (stocks && stocks.length > 0) {
-      // views = stocks.map(s, (i) => ({
-      //   <p key={i}>
-      //     {s.symbol}: {s.price}
-      //   </p>
-      // }));
+      views = stocks.map((s, i) => (
+      <h2 key={i}>{s.symbol}: <div style={{color: s.percent.includes("-") ? "red" : "green"}}>${s.price} | {s.percent}</div></h2>
+      ));
+      console.log(views)
     }
     return <div className="App">{views}</div>;
   }
