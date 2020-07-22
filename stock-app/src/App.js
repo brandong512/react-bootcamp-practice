@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { render } from "@testing-library/react";
+import StockCard from "./StockCard";
 
 class App extends Component {
   constructor(props) {
@@ -42,7 +43,12 @@ class App extends Component {
       ));
       console.log(views)
     }
-    return <div className="App">{views}</div>;
+    return (
+    <div className="App">
+      {views}
+      <StockCard/>
+    </div>
+    )
   }
 }
 
