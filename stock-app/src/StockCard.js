@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "@testing-library/react";
-// import "./StockCard.css";
+import "./StockCard.css";
 import PropTypes from "prop-types";
 
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
